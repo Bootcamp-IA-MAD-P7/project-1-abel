@@ -30,14 +30,18 @@ source .venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Run the taxi meter
+python taximeter.py
 ```
 
 ---
 
-![version](https://img.shields.io/badge/version-0.0.1--alpha-green.svg)
+![version](https://img.shields.io/badge/version-0.1.0-green.svg)
 
 ## 📌 Version History
 
-| Version      | Date       | Status | Description           |
-| ------------ | ---------- | ------ | --------------------- |
-| v0.0.1-alpha | 2026-05-07 | 🔨     | Initial project setup |
+| Version      | Date       | Status | Description             |
+| ------------ | ---------- | ------ | ----------------------- |
+| v0.0.1-alpha | 2026-05-07 | ✅     | Initial project setup   |
+| v0.1.0       | 2026-05-10 | 🔨     | Base code & system Logs |
