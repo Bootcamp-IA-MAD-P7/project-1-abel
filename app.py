@@ -13,27 +13,19 @@ def setup_logging():
     """Configura el sistema de logging - Comandos van a archivo y consola"""
     # Configuración centralizada
     config: Dict[str, Any] = {
-        'log_dir': "logs",
-        'log_file': "logs/taxi-register.log",
         'logger_name': 'taximeter',
         'log_level': logging.INFO,
         'format': '%(asctime)s - %(levelname)s - %(message)s',
         'date_format': '%Y-%m-%d %H:%M:%S'
     }
     
-    # Crear directorio
-    os.makedirs(config['log_dir'], exist_ok=True)
-    
-    # Configurar logger
     logger = logging.getLogger(config['logger_name'])
     logger.setLevel(config['log_level'])
-    logger.handlers.clear()
     
     # Configurar handler
-    handler = logging.FileHandler(config['log_file'], encoding='utf-8')
-    handler.setLevel(config['log_level'])
-    handler.setFormatter(logging.Formatter(config['format'], config['date_format']))
-    logger.addHandler(handler)
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(logging.Formatter(config['format'], config['date_format']))
+    logger.addHandler(console_handler)
     
     return logger
 
@@ -173,7 +165,11 @@ print("📍 Press Ctrl+C to stop the server")
 
 if __name__ == '__main__':
     # Asegurar que existe el directorio templates
-    if not os.path.exists('templates'):
-        os.makedirs('templates')
+    os.makedirs('templates', exist_ok=True)
     
-    app.run(debug=True, host='127.0.0.1', port=5000)
+    # Configuración para producción
+    port = int(os.environ.get('PORT', 5000))
+    host = '0.0.0.0'
+    debug = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+    logger.info(f"Starting Taximeter server on {host}:{port}")
+    app.run(debug=debug, host=host, port=port)
