@@ -32,7 +32,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 # Run the taxi meter
-python taximeter.py
+python app.py
 ```
 
 ---
