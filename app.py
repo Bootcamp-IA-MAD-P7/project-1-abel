@@ -60,7 +60,7 @@ trip: Dict[str, Any] = {
 def index():
     """Página principal"""
     logger.info("         🚕🏁 TAXIMETER APP STARTED (WEB MODE) 🚕🏁")
-    logger.info("="*40)
+    logger.info("="*24)
     return render_template('index.html')
 
 @app.route('/api/status')
@@ -138,14 +138,9 @@ def execute_command():
                 'moving': round(trip['moving'], 1),
                 'total': round(fare, 2)
             }
-            
             trip['active'] = False
-            trip['stopped'] = 0.0
-            trip['moving'] = 0.0
-            trip['state'] = 'stopped'
-            trip['start'] = 0.0
             logger.info(f"Command: finish | TRIP COMPLETED - Stopped: {trip['stopped']:.1f}s, Moving: {trip['moving']:.1f}s, Total fare: €{fare:.2f}")
-            logger.info("="*40)
+            logger.info("="*24)
 
         elif command == "exit":
             # Registrar salida del viaje
@@ -157,7 +152,7 @@ def execute_command():
             trip['start'] = 0.0
             response['message'] = "Goodbye!. Ready for new trip."
             logger.info("Command: exit | TAXIMETER APP STOPPED")
-            logger.info("="*40)
+            logger.info("="*24)
 
         else:
             response['success'] = False

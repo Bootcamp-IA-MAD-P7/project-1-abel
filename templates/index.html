@@ -193,7 +193,7 @@
 
 <body>
     <div class="container">
-        <h1>🚕🏁 TAXIMETER APP 🚕🏁</h1>
+        <h1>🚕 TAXIMETER 🏁</h1>
 
         <div class="status-card">
             <div class="status-text" id="statusText">⏹️ NO ACTIVE TRIP</div>
@@ -216,7 +216,7 @@
         </div>
 
         <div class="buttons" style="display: flex; flex-direction: column;">
-            <div style="display: flex; justify-content:space-evenly; padding-bottom: 16px;">
+            <div style="display: flex; justify-content:space-evenly; padding-bottom: 12px;">
                 <button class="btn-start" id="startBtn" onclick="sendCommand('start')">🚕 START</button>
                 <button class="btn-move" id="moveBtn" onclick="sendCommand('move')" disabled>▶️ MOVE</button>
                 <button class="btn-stop" id="stopBtn" onclick="sendCommand('stop')" disabled>⏹️ STOP</button>
@@ -228,8 +228,8 @@
             </div>
         </div>
 
-        <div class="summary" id="summary" style="padding-bottom: 16px;"></div>
-        <div class="error" id="error" style="padding-bottom: 16px;"></div>
+        <div class="summary" id="summary"></div>
+        <div class="error" id="error"></div>
 
         <div class="log-container" id="logContainer">
             <div class="log-entry"><span class="log-time">[startup]</span> <span class="log-message">=== Welcome to
