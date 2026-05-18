@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚕 Taximeter App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        
+        .status-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .status-text {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        
+        .fare-display {
+            font-size: 2em;
+            font-weight: bold;
+        }
+        
+        .invoice {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .invoice-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .invoice-total {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #28a745;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 2px solid #dee2e6;
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            padding: 10px;
+            font-size: 0.9em;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            filter: brightness(1.05);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-start { background: #28a745; color: white; }
+        .btn-stop { background: #dc3545; color: white; }
+        .btn-move { background: #ffc107; color: #333; }
+        .btn-finish { background: #007bff; color: white; }
+        .btn-exit { background: #6c757d; color: white; }
+        
+        .log-container {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: 10px;
+            padding: 15px;
+            height: 250px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+        }
+        
+        .log-entry {
+            padding: 3px 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .log-time {
+            color: #858585;
+            margin-right: 10px;
+        }
+        
+        .summary {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+            display: none;
+            font-size: 0.9em;
+        }
+        
+        .summary.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚕🏁 TAXIMETER APP 🚕🏁</h1>
+        
+        <div class="status-card">
+            <div class="status-text" id="statusText">⏹️ NO ACTIVE TRIP</div>
+            <div class="fare-display" id="fareDisplay">€0.00</div>
+        </div>
+        
+        <div class="invoice">
+            <div class="invoice-row">
+                <span>⏹️ Stopped time:</span>
+                <span><strong id="stoppedTime">0.0</strong> s (€0.02/s)</span>
+            </div>
+            <div class="invoice-row">
+                <span>▶️ Moving time:</span>
+                <span><strong id="movingTime">0.0</strong> s (€0.05/s)</span>
+            </div>
+            <div class="invoice-total">
+                <span>💰 TOTAL FARE:</span>
+                <span id="totalFare">€0.00</span>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button class="btn-start" id="startBtn" onclick="sendCommand('start')">🚕 START</button>
+            <button class="btn-stop" id="stopBtn" onclick="sendCommand('stop')" disabled>⏹️ STOP</button>
+            <button class="btn-move" id="moveBtn" onclick="sendCommand('move')" disabled>▶️ MOVE</button>
+            <button class="btn-finish" id="finishBtn" onclick="sendCommand('finish')" disabled>🏁 FINISH</button>
+            <button class="btn-exit" onclick="sendCommand('exit')">❌ EXIT</button>
+        </div>
+        
+        <div class="summary" id="summary"></div>
+        <div class="error" id="error"></div>
+        
+        <div class="log-container" id="logContainer">
+            <div class="log-entry"><span class="log-time">[startup]</span> <span class="log-message">=== Welcome to Taximeter App ===</span></div>
+            <div class="log-entry"><span class="log-time">[startup]</span> <span class="log-message">Commands: start, stop, move, finish, exit</span></div>
+        </div>
+    </div>
+    
+    <script>
+        let updateInterval = null;
+        
+        function addLog(message, isError = false) {
+            const logContainer = document.getElementById('logContainer');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `<span class="log-time">[${timestamp}]</span> <span class="log-message" style="${isError ? 'color: #ff6b6b;' : ''}">${message}</span>`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            
+            // Limitar logs a 100 entradas
+            while (logContainer.children.length > 100) {
+                logContainer.removeChild(logContainer.firstChild);
+            }
+        }
+        
+        async function updateStatus() {
+            try {
+                const response = await fetch('/api/status');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Actualizar display
+                    document.getElementById('stoppedTime').textContent = data.stopped;
+                    document.getElementById('movingTime').textContent = data.moving;
+                    document.getElementById('totalFare').textContent = `€${data.total_fare}`;
+                    document.getElementById('fareDisplay').textContent = `€${data.total_fare}`;
+                    
+                    if (data.active) {
+                        const statusText = data.state === 'stopped' ? '⏹️ STOPPED' : '▶️ MOVING';
+                        document.getElementById('statusText').textContent = statusText;
+                        
+                        // Habilitar/deshabilitar botones
+                        document.getElementById('startBtn').disabled = true;
+                        document.getElementById('stopBtn').disabled = false;
+                        document.getElementById('moveBtn').disabled = false;
+                        document.getElementById('finishBtn').disabled = false;
+                    } else {
+                        document.getElementById('statusText').textContent = '⏹️ NO ACTIVE TRIP';
+                        document.getElementById('startBtn').disabled = false;
+                        document.getElementById('stopBtn').disabled = true;
+                        document.getElementById('moveBtn').disabled = true;
+                        document.getElementById('finishBtn').disabled = true;
+                    }
+                    
+                    // Ocultar error si existe
+                    document.getElementById('error').style.display = 'none';
+                } else {
+                    console.error('Error in status data:', data);
+                }
+            } catch (error) {
+                console.error('Error updating status:', error);
+                document.getElementById('error').innerHTML = `❌ Connection error: ${error.message}`;
+                document.getElementById('error').style.display = 'block';
+            }
+        }
+        
+        async function sendCommand(command) {
+            try {
+                const response = await fetch('/api/command', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ command: command })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    addLog(`> ${command.toUpperCase()}: ${data.message}`);
+                    
+                    if (data.summary) {
+                        const summaryDiv = document.getElementById('summary');
+                        summaryDiv.innerHTML = `<strong>🏁 TRIP COMPLETED!</strong><br>
+                                                Stopped: ${data.summary.stopped}s | 
+                                                Moving: ${data.summary.moving}s | 
+                                                Total: €${data.summary.total}`;
+                        summaryDiv.classList.add('show');
+                        setTimeout(() => {
+                            summaryDiv.classList.remove('show');
+                        }, 5000);
+                    }
+                    
+                    if (data.exit) {
+                        addLog('Goodbye! You can close this window now.');
+                        setTimeout(() => {
+                            // No cerramos automáticamente, solo deshabilitamos botones
+                            alert('App terminated. You can close this window.');
+                        }, 1000);
+                    }
+                    
+                    // Actualizar estado inmediatamente
+                    await updateStatus();
+                } else {
+                    addLog(`❌ ${data.message}`, true);
+                }
+            } catch (error) {
+                console.error('Error sending command:', error);
+                addLog(`❌ Error: ${error.message}`, true);
+            }
+        }
+        
+        // Iniciar actualización cada segundo
+        updateStatus();
+        updateInterval = setInterval(updateStatus, 1000);
+        
+        // Log inicial
+        addLog('🚕 TAXIMETER APP STARTED (WEB MODE)');
+        addLog('='.repeat(50));
+        
+        // Limpiar intervalo al cerrar
+        window.addEventListener('beforeunload', function() {
+            if (updateInterval) {
+                clearInterval(updateInterval);
+            }
+        });
+    </script>
+</body>
+</html>

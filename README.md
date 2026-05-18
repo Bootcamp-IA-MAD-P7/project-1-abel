@@ -37,11 +37,12 @@ python app.py
 
 ---
 
-![version](https://img.shields.io/badge/version-0.1.0-green.svg)
+![version](https://img.shields.io/badge/version-1.0.0-green.svg)
 
 ## 📌 Version History
 
 | Version      | Date       | Status | Description             |
 | ------------ | ---------- | ------ | ----------------------- |
 | v0.0.1-alpha | 2026-05-07 | ✅     | Initial project setup   |
-| v0.1.0       | 2026-05-10 | 🔨     | Base code & system Logs |
+| v0.1.0       | 2026-05-10 | ✅     | Base code & system Logs |
+| v1.0.0       | 2026-05-10 | ✅     | First stable release    |

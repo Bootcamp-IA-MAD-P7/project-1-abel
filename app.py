@@ -67,7 +67,7 @@ trip: Dict[str, Any] = {
 @app.route('/')
 def index():
     """Página principal"""
-    logger.info("         🏁🚕 TAXIMETER APP STARTED (WEB MODE) 🚕🏁")
+    logger.info("         🚕🏁 TAXIMETER APP STARTED (WEB MODE) 🚕🏁")
     logger.info("="*60)
     return render_template('index.html')
 
@@ -172,5 +172,8 @@ print("📍 Open your browser and go to: http://localhost:5000")
 print("📍 Press Ctrl+C to stop the server")
 
 if __name__ == '__main__':
+    # Asegurar que existe el directorio templates
+    if not os.path.exists('templates'):
+        os.makedirs('templates')
     
     app.run(debug=True, host='127.0.0.1', port=5000)
